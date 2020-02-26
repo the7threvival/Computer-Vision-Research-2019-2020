@@ -6,9 +6,8 @@ import matplotlib.pyplot as plt
 from collections import OrderedDict
 
 def convert(line):
-    new_line = line.split(',')
-    new_line[3] = datetime.utcfromtimestamp(int(new_line[3][:-1])).strftime("%m/%d/%Y")
-    new_line.remove(new_line[2])
+    new_line = line.strip().split(',')
+    new_line[2] = datetime.utcfromtimestamp(int(new_line[2])).strftime("%m/%d/%Y")
     return new_line
 
 if __name__ == '__main__':
@@ -18,13 +17,13 @@ if __name__ == '__main__':
     t = []
     raw_data = []
 
-    for line in open("train.txt", 'r').readlines():
+    for line in open("train.csv", 'r').readlines()[1:]:
         cl = convert(line)
         data.append(cl)
 
-    for line in open("test.txt", 'r').readlines():
-        cl = convert(line)
-        data.append(cl)
+    #for line in open("test.txt", 'r').readlines():
+    #    cl = convert(line)
+    #    data.append(cl)
 
     for i in data:
         input = i[1]
@@ -115,6 +114,32 @@ if __name__ == '__main__':
         if i not in nd:
             nd.append(i)
     print(len(nd))
+
+    print()
+    print("             Individuals per encounter              ")
+    ind_per_enc = {}
+    min_enc_ = 10
+    sum_enc = 0
+    sum_ind = 0
+    for i in individual:
+        enc = i[-1]
+        if enc < min_enc_: 
+            continue
+        if enc in ind_per_enc:
+          ind_per_enc[enc] += 1
+        else:
+          ind_per_enc[enc] = 1
+        sum_enc += enc
+        sum_ind += 1
+
+    print("{} individuals have {} or more encounters".format(sum_ind, min_enc_))
+    print("with a total of {} encounters.".format(sum_enc))
+    
+    print("\nThe distribution (# encounters, # individuals) looks like this: ")
+    res = sorted(ind_per_enc.items(), key=lambda x: x[0])
+    print(res)
+
+    exit(0)
 
     num_bins = 81
     print(len(list(dict.fromkeys(x))))

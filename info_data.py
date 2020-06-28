@@ -17,7 +17,7 @@ if __name__ == '__main__':
     t = []
     raw_data = []
 
-    for line in open("train.csv", 'r').readlines()[1:]:
+    for line in open("train.txt", 'r').readlines()[1:]:
         cl = convert(line)
         data.append(cl)
 
@@ -85,6 +85,8 @@ if __name__ == '__main__':
                 min_p_per_enc = j[1]
 
     x = []
+    x1 = []
+    x2 = []
     one = 0
     two = 0
     three = 0
@@ -94,31 +96,28 @@ if __name__ == '__main__':
     for i in individual:
         if i[-1] == 1:
             one += 1
-        if i[-1] == 2:
+        elif i[-1] == 2:
             two += 1
-        if i[-1] == 3:
+        elif i[-1] == 3:
             three += 1
-        if i[-1] == 4:
+        elif i[-1] == 4:
             four += 1
-        if i[-1] == 5:
+        elif i[-1] == 5:
             five += 1
-        if i[-1] == 6:
+        elif i[-1] == 6:
             six += 1
-        if i[-1] != 1:
-            x.append(i[-1])
+        
+        x.append(i[-1])
+        if i[-1] > 1:
+          x1.append(i[-1])
+        if i[-1] > 2:
+          x2.append(i[-1])
     
-    # Some output
-    print(one, two, three, four, five, six)
-    nd = []
-    for i in x:
-        if i not in nd:
-            nd.append(i)
-    print(len(nd))
 
     print()
     print("             Individuals per encounter              ")
     ind_per_enc = {}
-    min_enc_ = 10
+    min_enc_ = 0
     sum_enc = 0
     sum_ind = 0
     for i in individual:
@@ -139,14 +138,29 @@ if __name__ == '__main__':
     res = sorted(ind_per_enc.items(), key=lambda x: x[0])
     print(res)
 
+    #exit(0)
+
+    num_bins = 50
+    plt.xlabel('Encounter per individual')
+    plt.ylabel('Number of individuals')
+    n, bins, patches = plt.hist(x1, num_bins, facecolor='blue', alpha=0.7)
+    plt.minorticks_on()
+    plt.grid(which='minor')
+    plt.title('# of Individuals with Specific # of Encounters (excluding 1)')
+    plt.show()
+
+    # Exclude 1 and 2 for nice visuals
+    num_bins = 50
+    plt.xlabel('Encounter per individual')
+    plt.ylabel('Number of individuals')
+    n, bins, patches = plt.hist(x2, num_bins, facecolor='blue', alpha=0.7)
+    plt.minorticks_on()
+    plt.grid(which='minor')
+    plt.title('# of Individuals with Specific # of Encounters (excluding 1 and 2)')
+    plt.show() 
+    
     exit(0)
 
-    num_bins = 81
-    print(len(list(dict.fromkeys(x))))
-    plt.xlabel('Encounter per individual')
-    plt.ylabel('number of individual')
-    n, bins, patches = plt.hist(x, num_bins, facecolor='blue', alpha=0.7)
-    plt.show()
 
     num_bins = 20
     print(len(list(dict.fromkeys(x))))
